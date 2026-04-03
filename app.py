@@ -5,8 +5,8 @@ import google.generativeai as genai
 st.set_page_config(page_title="Analista Pro IA", layout="centered")
 st.title("⚽ 🎾 Analista Esportiva Inteligente")
 
-# COLE SUA CHAVE ABAIXO ENTRE AS ASPAS
-minha_chave = "SUA_CHAVE_AQUI"
+# Sua chave já integrada abaixo
+minha_chave = "AIzaSyDFmaFopymE7AOsAKe9kq9EHMUqzIvFkhU"
 
 genai.configure(api_key=minha_chave)
 model = genai.GenerativeModel('gemini-1.5-flash')
@@ -20,16 +20,19 @@ for message in st.session_state.messages:
         st.markdown(message["content"])
 
 # Entrada do usuário
-if prompt := st.chat_input("Ex: Como está o jogo do Santos?"):
+if prompt := st.chat_input("Ex: Qual a expectativa de gols para o jogo do Santos hoje?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     # Resposta da IA
     try:
-        response = model.generate_content(prompt)
+        # Instrução oculta para focar em insights esportivos
+        contexto = "Você é um assistente especialista em análise esportiva, foco em futebol e tênis. " + prompt
+        response = model.generate_content(contexto)
+        
         with st.chat_message("assistant"):
             st.markdown(response.text)
         st.session_state.messages.append({"role": "assistant", "content": response.text})
     except Exception as e:
-        st.error(f"Erro na API: {e}")
+        st.error(f"Erro: Verifique sua chave ou conexão. Detalhes: {e}")
